@@ -35,11 +35,19 @@ jobs:
       - name: Lint application
         run: npm run lint
   build:
-    runs-on: macos-latest
     needs: [lint, test]
+    strategy:
+      matrix:
+        node-version: [14, 16]
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Get repo code
         uses: actions/checkout@v3
+      - name: Install node JS
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
       - name: Cache modules
         uses: actions/cache@v3
         with:
